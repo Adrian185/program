@@ -1,0 +1,15 @@
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+# Adatok letöltése és feldolgozása
+url = "https://www.ksh.hu/stadat_files/mun/hu/mun0003.html"
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+
+# Adatok kinyerése és fájlba írása
+with open("fenntarthatosagi_adatok.csv", "w", newline="", encoding="utf-8") as csvfile:
+    csvwriter = csv.writer(csvfile)
+    for row in soup.find_all("tr"):
+        cells = row.find_all(["td", "th"])
+        csvwriter.writerow([cell.get_text(strip=True) for cell in cells])
